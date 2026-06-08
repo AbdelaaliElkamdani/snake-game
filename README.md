@@ -1,4 +1,4 @@
-# Snake Game 🐍
+# Snake Game
 
 A classic Snake Game built with **HTML, CSS, and JavaScript**.
 
