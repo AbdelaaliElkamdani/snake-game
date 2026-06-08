@@ -30,3 +30,7 @@ A classic Snake Game built with **HTML, CSS, and JavaScript**.
 ## Installation
 
 Simply download or clone the repository and open `index.html` in your browser.
+
+## License
+
+This project is open source and available for learning and personal use.
