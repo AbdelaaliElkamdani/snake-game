@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neo Snake - Modern Retro Arcade</title>
+  <!-- Google Fonts for modern tech typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Game Container -->
+  <div class="game-container glass">
+    <!-- Header with Scores and Theme Selector -->
+    <header class="game-header">
+      <div class="brand">
+        <h1>NEO <span class="accent-text">SNAKE</span></h1>
+      </div>
+      <div class="header-controls">
+        <button id="theme-btn" class="icon-btn" title="Change Theme">
+          <i class="fas fa-palette"></i>
+        </button>
+        <button id="fullscreen-btn" class="icon-btn" title="Fullscreen">
+          <i class="fas fa-expand"></i>
+        </button>
+        <button id="mute-btn" class="icon-btn" title="Toggle Sound">
+          <i class="fas fa-volume-up"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Score Board -->
+    <div class="score-board">
+      <div class="score-card glass-inset">
+        <span class="score-label">SCORE</span>
+        <span id="score-val" class="score-number">000</span>
+      </div>
+      <div class="score-card glass-inset">
+        <span class="score-label">HI-SCORE</span>
+        <span id="high-score-val" class="score-number">000</span>
+      </div>
+    </div>
+
+    <!-- Main Game View -->
+    <div class="game-area">
+      <!-- Screen Overlays: Start, Game Over, Pause -->
+
+      <!-- Start Screen -->
+      <div id="start-screen" class="screen-overlay active">
+        <div class="overlay-content">
+          <h2 class="neon-pulse">SELECT DIFFICULTY</h2>
+          <div class="difficulty-selector">
+            <button class="diff-btn" data-diff="easy">
+              <span class="btn-text">EASY</span>
+              <span class="btn-desc">Relaxed Grid (80ms)</span>
+            </button>
+            <button class="diff-btn active" data-diff="medium">
+              <span class="btn-text">MEDIUM</span>
+              <span class="btn-desc">Standard Arcade (100ms)</span>
+            </button>
+            <button class="diff-btn" data-diff="hard">
+              <span class="btn-text">HARD</span>
+              <span class="btn-desc">Insane Speed (60ms)</span>
+            </button>
+          </div>
+          <button id="start-btn" class="primary-btn pulse-glow">
+            <i class="fas fa-play"></i> START GAME
+          </button>
+        </div>
+      </div>
+
+      <!-- Pause Screen -->
+      <div id="pause-screen" class="screen-overlay hidden">
+        <div class="overlay-content">
+          <h2 class="neon-title">GAME PAUSED</h2>
+          <p class="overlay-info">Press SPACE or Escape to resume</p>
+          <button id="resume-btn" class="primary-btn">
+            <i class="fas fa-play"></i> RESUME
+          </button>
+        </div>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="game-over-screen" class="screen-overlay hidden">
+        <div class="overlay-content">
+          <h2 class="game-over-title">GAME OVER</h2>
+          <div class="final-stats">
+            <div class="stat-row">
+              <span>Final Score:</span>
+              <span id="final-score" class="accent-text">0</span>
+            </div>
+            <div class="stat-row">
+              <span>Apples Eaten:</span>
+              <span id="final-apples" class="accent-text">0</span>
+            </div>
+            <div id="new-high-score" class="new-record-badge hidden">
+              <i class="fas fa-crown"></i> NEW HIGH SCORE!
+            </div>
+          </div>
+          <button id="restart-btn" class="primary-btn pulse-glow">
+            <i class="fas fa-rotate-left"></i> PLAY AGAIN
+          </button>
+        </div>
+      </div>
+
+      <!-- The Canvas -->
+      <canvas id="game-canvas" width="400" height="400"></canvas>
+    </div>
+
+    <!-- Active Theme / Current Stats Bar -->
+    <div class="stats-bar">
+      <div id="active-difficulty" class="pill-badge">
+        <i class="fas fa-gauge-high"></i> Medium
+      </div>
+      <div id="active-theme" class="pill-badge">
+        <i class="fas fa-tint"></i> Classic Neon
+      </div>
+      <div id="game-paused-indicator" class="pill-badge hidden">
+        <i class="fas fa-pause"></i> PAUSED
+      </div>
+    </div>
+
+    <!-- On-screen mobile controls -->
+    <div class="mobile-controls-wrapper">
+      <button id="toggle-controls" class="action-btn">
+        <i class="fas fa-gamepad"></i> On-screen D-pad
+      </button>
+      <div id="mobile-dpad" class="dpad hidden">
+        <button id="btn-up" class="dpad-btn up"><i class="fas fa-chevron-up"></i></button>
+        <div class="dpad-row">
+          <button id="btn-left" class="dpad-btn left"><i class="fas fa-chevron-left"></i></button>
+          <div class="dpad-center"><i class="fas fa-circle"></i></div>
+          <button id="btn-right" class="dpad-btn right"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <button id="btn-down" class="dpad-btn down"><i class="fas fa-chevron-down"></i></button>
+      </div>
+    </div>
+
+    <!-- Live Instructions/Achievements Toast -->
+    <div id="achievement-toast" class="toast hidden">
+      <div class="toast-icon"><i class="fas fa-trophy"></i></div>
+      <div class="toast-content">
+        <span class="toast-title">ACHIEVEMENT!</span>
+        <span id="toast-desc" class="toast-desc">Unlocked something cool</span>
+      </div>
+    </div>
+
+    <div class="game-instructions">
+      <p class="desktop-only"><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd> or <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to steer • <kbd>SPACE</kbd> or <kbd>P</kbd> to pause</p>
+      <p class="mobile-only">Swipe or use D-pad to steer</p>
+    </div>
+  </div>
+
+  <!-- Theme selector overlay -->
+  <div id="theme-modal" class="modal-overlay hidden">
+    <div class="modal-content glass">
+      <h3>Select Theme</h3>
+      <div class="theme-grid">
+        <button class="theme-option active" data-theme="classic">
+          <span class="color-preview classic"></span> Classic Neon
+        </button>
+        <button class="theme-option" data-theme="cyberpunk">
+          <span class="color-preview cyberpunk"></span> Cyberpunk Magenta
+        </button>
+        <button class="theme-option" data-theme="emerald">
+          <span class="color-preview emerald"></span> Emerald Forest
+        </button>
+        <button class="theme-option" data-theme="sunset">
+          <span class="color-preview sunset"></span> Sunset Glow
+        </button>
+        <button class="theme-option" data-theme="monochrome">
+          <span class="color-preview monochrome"></span> Matrix Hacker
+        </button>
+      </div>
+      <button id="close-theme-btn" class="primary-btn secondary">Close</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
